@@ -1,0 +1,52 @@
+/* Query 1 */
+--top 10 Artists with number of albums
+SELECT ar.Name AS Artist_name , COUNT (al.ArtistId) AS num_of_album
+FROM Artist ar
+JOIN Album  al
+  ON ar.ArtistId = al.ArtistId
+GROUP BY ar.name
+ORDER BY num_of_album DESC      
+LIMIT 10 ;
+
+/* Query 2 */
+--top 10 Music genre with sales
+SELECT g.Name , SUM(il.Quantity * il.UnitPrice) AS Total_Sales
+FROM Track t
+JOIN InvoiceLine il
+  ON il.TrackId = t.TrackId
+JOIN Genre g 
+  ON g.GenreId = t.GenreId
+GROUP BY g.Name
+ORDER BY Total_Sales DESC
+LIMIT 10 ;
+
+/* Query 3 */
+--top 5 genre in "NORWAY" With number of tracks
+SELECT g.Name AS Genre_name , COUNT(t.TrackId) AS NUM_OF_TRACKS  
+FROM Track t
+JOIN Genre g
+  ON t.GenreId = g.GenreId
+JOIN InvoiceLine il 
+  ON t.TrackId = il.TrackId
+JOIN Invoice i
+  ON il.InvoiceId = i.InvoiceId
+WHERE i.BillingCountry = 'Norway'
+GROUP BY  Genre_name
+ORDER BY NUM_OF_TRACKS  DESC 
+LIMIT  5;
+
+/* Query 4 */
+--top 5 countries that purchased "calssican" music
+SELECT i.BillingCountry AS Country_Name,
+       COUNT(*) classical_Purchased
+FROM Invoice i
+JOIN InvoiceLine il
+ON i.InvoiceId = il.InvoiceId
+JOIN Track t
+ON il.TrackId = t.TrackId
+JOIN Genre g
+  ON t.GenreId = g.Genreid
+WHERE g.Name = 'Classical'
+GROUP BY i.BillingCountry
+ORDER BY classical_Purchased DESC, i.BillingCountry
+LIMIT 5;
